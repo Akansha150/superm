@@ -111,6 +111,7 @@ if (isset($_POST['register'])) {
     $file = addslashes(file_get_contents($_FILES['document']['tmp_name']));
     $msg = '';
     $news = $_POST['checkbox'];
+    $isValid = filter_var($email, FILTER_VALIDATE_EMAIL);
 
 
 //query part
@@ -121,7 +122,7 @@ if (isset($_POST['register'])) {
     $vcode = bin2hex(random_bytes(8));
     $query = "INSERT INTO users(UserFirstName,UserLastName,UserEmail,UserPassword,UserPhone,Image,UserAddress,UserAddress2,UserFax,UserCity,UserZip,UserState,UserCountry,UserVerificationCode,UserEmailVerified,UserSubscribe) VALUES ('$first','$last','$email','$passwordH','$phone','$file',' ',' ',' ',' ',' ',' ',' ','$vcode','0','$news')";
 //
-    if (mysqli_query($conn, $query) && sendMail($email, $vcode)) {
+    if ($isValid && mysqli_query($conn, $query) && sendMail($email, $vcode)) {
 
         $msg = "Registered Successfully";
         header("location: /login.php?data=$msg");
